@@ -1,12 +1,11 @@
 
 
-
 import { Table } from 'antd';
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 const App = () => {
-  const [columns, setColumns] = useState([
+  const [columns] = useState([
     {
       title: 'year',
       dataIndex: 'year',
@@ -26,7 +25,6 @@ const App = () => {
   ]);
 
   const [dataSource, setDataSource] = useState([]);
-  const [selectedYear, setSelectedYear] = useState(null);
   const [showLineGraph, setShowLineGraph] = useState(false);
   const [jobTitles, setJobTitles] = useState([]);
   const [showJobTitlesTable, setShowJobTitlesTable] = useState(false);
@@ -59,38 +57,6 @@ const App = () => {
     );
   };
 
-  const YearlyStatsTable = ({ selectedYear }) => {
-    const yearlyStats = dataSource.find((item) => item.year === selectedYear);
-
-    const columns = [
-      {
-        title: 'Year',
-        dataIndex: 'year',
-        sorter: (a, b) => a.year - b.year,
-        sortDirections: ['ascend', 'descend'],
-      },
-      {
-        title: 'Total Jobs',
-        dataIndex: 'totalJobs',
-        sorter: (a, b) => a.totalJobs - b.totalJobs,
-        sortDirections: ['ascend', 'descend'],
-      },
-      {
-        title: 'Average Salary (USD)',
-        dataIndex: 'averageSalary',
-        sorter: (a, b) => a.averageSalary - b.averageSalary,
-        sortDirections: ['ascend', 'descend'],
-      },
-    ];
-
-    return (
-      <Table
-        columns={columns}
-        dataSource={[yearlyStats]}
-      />
-    );
-  };
-
   const JobTitlesTable = ({ jobTitles }) => {
     const columns = [
       {
@@ -115,7 +81,7 @@ const App = () => {
       <Table
         columns={columns}
         dataSource={jobTitles}
-        onRow={(record) => {
+        onRow={() => {
           return {
             onClick: handleTableClick,
           };
@@ -125,7 +91,6 @@ const App = () => {
   };
 
   const handleRowClick = (year) => {
-    setSelectedYear(year);
     setShowLineGraph(true);
     setShowJobTitlesTable(true);
     const yearlyData = dataSource.find((item) => item.year === year);
@@ -139,7 +104,7 @@ const App = () => {
         columns={columns}
         dataSource={dataSource}
         scroll={{ y: 500 }}
-        onChange={(pagination, filters, sorter) => {
+        onChange={(sorter) => {
           console.log('Sorter:', sorter);
         }}
         onRow={(record) => {
